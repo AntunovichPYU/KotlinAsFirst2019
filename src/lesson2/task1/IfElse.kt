@@ -66,9 +66,11 @@ fun minBiRoot(a: Double, b: Double, c: Double): Double {
  * вернуть строку вида: «21 год», «32 года», «12 лет».
  */
 fun ageDescription(age: Int): String =
-    if ((age % 10 in 2..4) && (age % 100 !in 12..14)) "$age года" else
-        if ((age % 10 == 1) && (age % 100 != 11)) "$age год" else
-            "$age лет"
+    when {
+        (age % 10 in 2..4) && (age % 100 !in 12..14) -> "$age года"
+        (age % 10 == 1) && (age % 100 != 11) -> "$age год"
+        else -> "$age лет"
+    }
 
 /**
  * Простая
@@ -104,10 +106,12 @@ fun whichRookThreatens(
     rookX1: Int, rookY1: Int,
     rookX2: Int, rookY2: Int
 ): Int =
-    if (((kingX == rookX1) && (kingX == rookX2)) || ((kingY == rookY1) && (kingY == rookY2)) || ((kingX == rookX1) && (kingY == rookY2)) || ((kingY == rookY1) && (kingX == rookX2))) 3 else
-        if ((kingX == rookX1) || (kingY == rookY1)) 1 else
-            if ((kingX == rookX2) || (kingY == rookY2)) 2 else
-                0
+    when {
+        ((kingX == rookX2) || (kingY == rookY2)) && ((kingX == rookX1) || (kingY == rookY1)) -> 3
+        kingX == rookX1 || kingY == rookY1 -> 1
+        kingX == rookX2 || kingY == rookY2 -> 2
+        else -> 0
+    }
 
 /**
  * Простая
@@ -124,10 +128,12 @@ fun rookOrBishopThreatens(
     rookX: Int, rookY: Int,
     bishopX: Int, bishopY: Int
 ): Int =
-    if (((kingX == rookX) || (kingY == rookY)) && (abs(kingX - bishopX) == abs(kingY - bishopY))) 3 else
-        if ((kingX == rookX) || (kingY == rookY)) 1 else
-            if (abs(kingX - bishopX) == abs(kingY - bishopY)) 2 else
-                0
+    when {
+        ((kingX == rookX) || (kingY == rookY)) && (abs(kingX - bishopX) == abs(kingY - bishopY)) -> 3
+        kingX == rookX || kingY == rookY -> 1
+        abs(kingX - bishopX) == abs(kingY - bishopY) -> 2
+        else -> 0
+    }
 
 /**
  * Простая
@@ -137,11 +143,17 @@ fun rookOrBishopThreatens(
  * прямоугольным (вернуть 1) или тупоугольным (вернуть 2).
  * Если такой треугольник не существует, вернуть -1.
  */
-fun triangleKind(a: Double, b: Double, c: Double): Int =
-    if ((a + b < c) || (a + c < b) || (b + c < a)) -1 else
-        if ((a * a + b * b == c * c) || (a * a + c * c == b * b) || (b * b + c * c == a * a)) 1 else
-            if ((a * a + b * b < c * c) || (a * a + c * c < b * b) || (b * b + c * c < a * a)) 2 else
-                0
+fun triangleKind(a: Double, b: Double, c: Double): Int {
+    val maxSide = maxOf(a, b, c)
+    val sideOne = minOf(a, b, c)
+    val sideTwo = a + b + c - maxSide - sideOne
+    return when {
+        sideOne + sideTwo < maxSide -> -1
+        sqr(sideOne) + sqr(sideTwo) == sqr(maxSide) -> 1
+        sqr(sideOne) + sqr(sideTwo) < sqr(maxSide) -> 2
+        else -> 0
+    }
+}
 
 /**
  * Средняя
@@ -152,12 +164,14 @@ fun triangleKind(a: Double, b: Double, c: Double): Int =
  * Если пересечения нет, вернуть -1.
  */
 fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
-    return if (c > a) {
-        if (c > b) -1 else
-            if (d > b) (b - c) else
-                (d - c)
-    } else
-        if (a > d) -1 else
-            if (b > d) (d - a) else
-                (b - a)
+    return when {
+        c > a -> when {
+            c > b -> -1
+            d > b -> b - c
+            else -> d - c
+        }
+        a > d -> -1
+        b > d -> d - a
+        else -> b - a
+    }
 }
