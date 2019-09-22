@@ -145,12 +145,10 @@ fun rookOrBishopThreatens(
  */
 fun triangleKind(a: Double, b: Double, c: Double): Int {
     val maxSide = maxOf(a, b, c)
-    val sideOne = minOf(a, b, c)
-    val sideTwo = a + b + c - maxSide - sideOne
     return when {
-        sideOne + sideTwo < maxSide -> -1
-        sqr(sideOne) + sqr(sideTwo) == sqr(maxSide) -> 1
-        sqr(sideOne) + sqr(sideTwo) < sqr(maxSide) -> 2
+        a + b + c < 2 * maxSide -> -1
+        sqr(a) + sqr(b) + sqr(c) == 2 * sqr(maxSide) -> 1
+        sqr(a) + sqr(b) + sqr(c) < 2 * sqr(maxSide) -> 2
         else -> 0
     }
 }
