@@ -140,7 +140,7 @@ fun maxDivisor(n: Int): Int = n / minDivisor(n)
  * Взаимно простые числа не имеют общих делителей, кроме 1.
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
-fun isCoPrime(m: Int, n: Int): Boolean = lcm(m, n) == m * n
+fun isCoPrime(m: Int, n: Int): Boolean = lcm(m, n) == abs(m * n)
 
 /**
  * Простая
@@ -192,7 +192,7 @@ fun sin(x: Double, eps: Double): Double {
     var number = rem
     var n = 1
     var seqMem = rem.pow(n * 2 + 1) / factorial(n * 2 + 1)
-    while (seqMem >= eps) {
+    while (abs(seqMem) >= eps) {
         number += seqMem * (-1.0).pow(n)
         n += 1
         seqMem = rem.pow(n * 2 + 1) / factorial(n * 2 + 1)
@@ -214,7 +214,7 @@ fun cos(x: Double, eps: Double): Double {
     var number = 1.0
     var n = 1
     var seqMem = rem.pow(n * 2) / factorial(n * 2)
-    while (seqMem >= eps) {
+    while (abs(seqMem) >= eps) {
         number += seqMem * (-1.0).pow(n)
         n += 1
         seqMem = rem.pow(n * 2) / factorial(n * 2)
@@ -283,7 +283,7 @@ fun squareSequenceDigit(n: Int): Int {
     while (amountOfDigit < n) {
         num++
         amountOfDigit += power
-        if (sqr(num) / 10.0.pow(power) != 0.0) power++
+        if ((sqr(num) / 10.0.pow(power)).toInt() != 0) power++
     }
     sqSeq = sqr(num - 1.0)
     sqSeq /= 10.0.pow(amountOfDigit - n)
@@ -307,7 +307,7 @@ fun fibSequenceDigit(n: Int): Int {
     while (amountOfDigit < n) {
         num++
         amountOfDigit += power
-        if (fib(num) / 10.0.pow(power) != 0.0) power++
+        if (fib(num) / 10.0.pow(power).toInt() != 0) power++
     }
     fibSeq = fib(num - 1)
     fibSeq /= 10.0.pow(amountOfDigit - n).toInt()
