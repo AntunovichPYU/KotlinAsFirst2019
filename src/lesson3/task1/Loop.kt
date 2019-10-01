@@ -106,17 +106,11 @@ fun fib(n: Int): Int {
 fun lcm(m: Int, n: Int): Int {
     var gcd = m
     var number = n
-    return when {
-        m == n -> m
-        isPrime(m) && isPrime(n) -> m * n
-        else -> {
-            while (gcd != number) {
-                if (gcd > number) gcd -= number else
-                    number -= gcd
-            }
-            return abs(m * n) / gcd
-        }
+    while (gcd != number) {
+        if (gcd > number) gcd -= number
+        else number -= gcd
     }
+    return abs(m * n) / gcd
 }
 
 /**
@@ -126,17 +120,10 @@ fun lcm(m: Int, n: Int): Int {
  */
 fun minDivisor(n: Int): Int {
     var divisor = 2
-    return when {
-        isPrime(n) -> n
-        else -> {
-            while (n % divisor > 0) {
-                do {
-                    divisor++
-                } while (!isPrime(divisor))
-            }
-            return divisor
-        }
+    while (n % divisor != 0) {
+        divisor++
     }
+    return divisor
 }
 
 /**
@@ -144,20 +131,7 @@ fun minDivisor(n: Int): Int {
  *
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
-fun maxDivisor(n: Int): Int {
-    var divisor = 2
-    return when {
-        isPrime(n) -> 1
-        else -> {
-            while (n % divisor > 0) {
-                do {
-                    divisor++
-                } while (!isPrime(divisor))
-            }
-            return n / divisor
-        }
-    }
-}
+fun maxDivisor(n: Int): Int = n / minDivisor(n)
 
 /**
  * Простая
@@ -166,15 +140,7 @@ fun maxDivisor(n: Int): Int {
  * Взаимно простые числа не имеют общих делителей, кроме 1.
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
-fun isCoPrime(m: Int, n: Int): Boolean {
-    var gcd = m
-    var number = n
-    while (gcd != number) {
-        if (gcd > number) gcd -= number else
-            number -= gcd
-    }
-    return gcd == 1
-}
+fun isCoPrime(m: Int, n: Int): Boolean = lcm(m, n) == m * n
 
 /**
  * Простая
@@ -206,8 +172,8 @@ fun collatzSteps(x: Int): Int {
     var steps = 0
     while (number != 1) {
         steps += 1
-        if (number % 2 == 0) number /= 2 else
-            number = number * 3 + 1
+        if (number % 2 == 0) number /= 2
+        else number = number * 3 + 1
     }
     return steps
 }
@@ -224,12 +190,12 @@ fun collatzSteps(x: Int): Int {
 fun sin(x: Double, eps: Double): Double {
     val rem = x % (2 * PI)
     var number = rem
-    var power = 3.0
     var n = 1
-    while (abs(rem.pow(power) / factorial(power.toInt()) * (-1.0).pow(n)) >= eps) {
-        number += rem.pow(power) / factorial(power.toInt()) * (-1.0).pow(n)
+    var seqMem = rem.pow(n * 2 + 1) / factorial(n * 2 + 1)
+    while (seqMem >= eps) {
+        number += seqMem * (-1.0).pow(n)
         n += 1
-        power += 2
+        seqMem = rem.pow(n * 2 + 1) / factorial(n * 2 + 1)
     }
     return number
 }
@@ -246,12 +212,12 @@ fun sin(x: Double, eps: Double): Double {
 fun cos(x: Double, eps: Double): Double {
     val rem = x % (2 * PI)
     var number = 1.0
-    var power = 2.0
     var n = 1
-    while (abs(rem.pow(power) / factorial(power.toInt()) * (-1.0).pow(n)) >= eps) {
-        number += rem.pow(power) / factorial(power.toInt()) * (-1.0).pow(n)
+    var seqMem = rem.pow(n * 2) / factorial(n * 2)
+    while (seqMem >= eps) {
+        number += seqMem * (-1.0).pow(n)
         n += 1
-        power += 2
+        seqMem = rem.pow(n * 2) / factorial(n * 2)
     }
     return number
 }
@@ -266,10 +232,8 @@ fun cos(x: Double, eps: Double): Double {
 fun revert(n: Int): Int {
     var revNum = 0
     var num = n
-    var rem: Int
     while (num > 0) {
-        rem = num % 10
-        revNum = revNum * 10 + rem
+        revNum = revNum * 10 + num % 10
         num /= 10
     }
     return revNum
@@ -295,17 +259,11 @@ fun isPalindrome(n: Int): Boolean = revert(n) == n
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun hasDifferentDigits(n: Int): Boolean {
-    var digit: Int
     var num = n
-    var res = false
-    while (num > 10) {
-        digit = n % 10
+    while (num > 0 && num % 10 == n % 10) {
         num /= 10
-        if (num % 10 == digit) continue
-        res = true
-        break
     }
-    return res
+    return num != 0
 }
 
 /**
@@ -318,22 +276,18 @@ fun hasDifferentDigits(n: Int): Boolean {
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun squareSequenceDigit(n: Int): Int {
-    var sqSeq: Int
+    var sqSeq: Double
     var amountOfDigit = 0
     var power = 1
     var num = 1
     while (amountOfDigit < n) {
-        if ((sqr(num) / 10.0.pow(power)).toInt() == 0) {
-            num++
-            amountOfDigit += power
-        } else
-            power++
+        num++
+        amountOfDigit += power
+        if (sqr(num) / 10.0.pow(power) != 0.0) power++
     }
-    sqSeq = sqr(num - 1)
-    for (i in 1..amountOfDigit - n) {
-        sqSeq /= 10
-    }
-    return sqSeq % 10
+    sqSeq = sqr(num - 1.0)
+    sqSeq /= 10.0.pow(amountOfDigit - n)
+    return (sqSeq % 10).toInt()
 }
 
 /**
@@ -346,20 +300,16 @@ fun squareSequenceDigit(n: Int): Int {
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun fibSequenceDigit(n: Int): Int {
-    var fibSeq: Int
+    var fibSeq: Double
     var amountOfDigit = 0
     var power = 1
     var num = 1
     while (amountOfDigit < n) {
-        if ((fib(num) / 10.0.pow(power)).toInt() == 0) {
-            num++
-            amountOfDigit += power
-        } else
-            power++
+        num++
+        amountOfDigit += power
+        if (sqr(num) / 10.0.pow(power) != 0.0) power++
     }
-    fibSeq = fib(num - 1)
-    for (i in 1..amountOfDigit - n) {
-        fibSeq /= 10
-    }
-    return fibSeq % 10
+    fibSeq = sqr(num - 1.0)
+    fibSeq /= 10.0.pow(amountOfDigit - n)
+    return (fibSeq % 10).toInt()
 }
