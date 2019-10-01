@@ -300,16 +300,16 @@ fun squareSequenceDigit(n: Int): Int {
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun fibSequenceDigit(n: Int): Int {
-    var fibSeq: Double
+    var fibSeq: Int
     var amountOfDigit = 0
     var power = 1
     var num = 1
     while (amountOfDigit < n) {
         num++
         amountOfDigit += power
-        if (sqr(num) / 10.0.pow(power) != 0.0) power++
+        if (fib(num) / 10.0.pow(power) != 0.0) power++
     }
-    fibSeq = sqr(num - 1.0)
-    fibSeq /= 10.0.pow(amountOfDigit - n)
-    return (fibSeq % 10).toInt()
+    fibSeq = fib(num - 1)
+    fibSeq /= 10.0.pow(amountOfDigit - n).toInt()
+    return (fibSeq % 10)
 }
