@@ -195,7 +195,7 @@ fun sin(x: Double, eps: Double): Double {
     while (abs(seqMem) >= eps) {
         number += seqMem * (-1.0).pow(n)
         n += 1
-        seqMem = rem.pow(n * 2 + 1) / factorial(n * 2 + 1)
+        seqMem *= sqr(rem) / (n * 2 * (n * 2 + 1))
     }
     return number
 }
@@ -217,7 +217,7 @@ fun cos(x: Double, eps: Double): Double {
     while (abs(seqMem) >= eps) {
         number += seqMem * (-1.0).pow(n)
         n += 1
-        seqMem = rem.pow(n * 2) / factorial(n * 2)
+        seqMem *= sqr(rem) / (n * 2 * (n * 2 - 1))
     }
     return number
 }
@@ -276,7 +276,7 @@ fun hasDifferentDigits(n: Int): Boolean {
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun squareSequenceDigit(n: Int): Int {
-    var sqSeq: Double
+    var sqSeq: Int
     var amountOfDigit = 0
     var power = 1
     var num = 1
@@ -285,9 +285,9 @@ fun squareSequenceDigit(n: Int): Int {
         amountOfDigit += power
         if ((sqr(num) / 10.0.pow(power)).toInt() != 0) power++
     }
-    sqSeq = sqr(num - 1.0)
-    sqSeq /= 10.0.pow(amountOfDigit - n)
-    return (sqSeq % 10).toInt()
+    sqSeq = sqr(num - 1)
+    sqSeq /= 10.0.pow(amountOfDigit - n).toInt()
+    return (sqSeq % 10)
 }
 
 /**
