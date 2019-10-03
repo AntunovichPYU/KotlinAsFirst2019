@@ -266,6 +266,20 @@ fun hasDifferentDigits(n: Int): Boolean {
     return num != 0
 }
 
+fun sequenceDigit(p: Int, f: (Int) -> Int): Int {
+    val seq: Int
+    var amountOfDigit = 0
+    var power = 1
+    var num = 1
+    while (amountOfDigit < p) {
+        num++
+        amountOfDigit += power
+        if ((f(num) / 10.0.pow(power)).toInt() != 0) power++
+    }
+    seq = f(num - 1) / 10.0.pow(amountOfDigit - p).toInt()
+    return seq % 10
+}
+
 /**
  * Сложная
  *
@@ -275,20 +289,7 @@ fun hasDifferentDigits(n: Int): Boolean {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun squareSequenceDigit(n: Int): Int {
-    var sqSeq: Int
-    var amountOfDigit = 0
-    var power = 1
-    var num = 1
-    while (amountOfDigit < n) {
-        num++
-        amountOfDigit += power
-        if ((sqr(num) / 10.0.pow(power)).toInt() != 0) power++
-    }
-    sqSeq = sqr(num - 1)
-    sqSeq /= 10.0.pow(amountOfDigit - n).toInt()
-    return (sqSeq % 10)
-}
+fun squareSequenceDigit(n: Int): Int = sequenceDigit(n) { x -> sqr(x) }
 
 /**
  * Сложная
@@ -299,17 +300,4 @@ fun squareSequenceDigit(n: Int): Int {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun fibSequenceDigit(n: Int): Int {
-    var fibSeq: Int
-    var amountOfDigit = 0
-    var power = 1
-    var num = 1
-    while (amountOfDigit < n) {
-        num++
-        amountOfDigit += power
-        if (fib(num) / 10.0.pow(power).toInt() != 0) power++
-    }
-    fibSeq = fib(num - 1)
-    fibSeq /= 10.0.pow(amountOfDigit - n).toInt()
-    return (fibSeq % 10)
-}
+fun fibSequenceDigit(n: Int): Int = sequenceDigit(n) { x -> fib(x) }
