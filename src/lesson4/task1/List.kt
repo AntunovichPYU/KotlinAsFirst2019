@@ -340,4 +340,61 @@ fun roman(n: Int): String {
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
-fun russian(n: Int): String = TODO()
+fun russian(n: Int): String {
+    val rusDigits = listOf(
+        "", "один", "два", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять", "одна", "две"
+    )
+    val rusTens = listOf(
+        "", "десять", "двадцать", "тридцать", "сорок",
+        "пятьдесят", "шестьдесят", "семьдесят", "восемьдесят", "девяносто"
+    )
+    val rusTensBeforeTwenty = listOf(
+        "", "одиннадцать", "двенадцать", "тринадцать", "четырнадцать",
+        "пятнадцать", "шестнадцать", "семнадцать", "восемнадцать", "девятнадцать"
+    )
+    val rusHundreds = listOf(
+        "", "сто", "двести", "триста", "четыреста", "пятьсот", "шестьсот", "семьсот", "восемьсот", "девятьсот"
+    )
+    val hundreds = n % 1000
+    val thousands = n / 1000
+    val result = mutableListOf<String>()
+    val thousandsList = mutableListOf<String>()
+    val hundredsList = mutableListOf<String>()
+
+    if (hundreds % 100 in 11..19) {
+        hundredsList.add(rusHundreds[hundreds / 100])
+        hundredsList.add(rusTensBeforeTwenty[hundreds % 10])
+    } else {
+        hundredsList.add(rusHundreds[hundreds / 100])
+        hundredsList.add(rusTens[hundreds % 100 / 10])
+        hundredsList.add(rusDigits[hundreds % 10])
+    }
+    if (thousands != 0) when {
+        thousands % 100 in 11..19 -> {
+            thousandsList.add(rusHundreds[thousands / 100])
+            thousandsList.add(rusTensBeforeTwenty[thousands % 10])
+        }
+        thousands % 10 in 1..2 -> {
+            thousandsList.add(rusHundreds[thousands / 100])
+            thousandsList.add(rusTens[thousands % 100 / 10])
+            thousandsList.add(rusDigits[thousands % 10 + 9])
+        }
+        else -> {
+            thousandsList.add(rusHundreds[thousands / 100])
+            thousandsList.add(rusTens[thousands % 100 / 10])
+            thousandsList.add(rusDigits[thousands % 10])
+        }
+    }
+    result += when {
+        thousands == 0 -> hundredsList
+        thousands % 100 in 11..19 -> thousandsList + "тысяч" + hundredsList
+        thousands % 10 == 1 -> thousandsList + "тысяча" + hundredsList
+        thousands % 10 in 2..4 -> thousandsList + "тысячи" + hundredsList
+        else -> thousandsList + "тысяч" + hundredsList
+    }
+    while ("" in result) {
+        result.remove("")
+    }
+
+    return result.joinToString(" ")
+}
