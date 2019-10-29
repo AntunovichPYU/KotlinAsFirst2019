@@ -177,10 +177,22 @@ fun times(a: List<Int>, b: List<Int>): Int {
  * Коэффициенты многочлена заданы списком p: (p0, p1, p2, p3, ..., pN).
  * Значение пустого многочлена равно 0 при любом x.
  */
+fun pow(n: Int, i: Int): Int {
+    var res = 1
+    var num = n
+    var power = i
+    while (power > 0) {
+        if (power % 2 == 1) res *= num
+        num *= num
+        power /= 2
+    }
+    return res
+}
+
 fun polynom(p: List<Int>, x: Int): Int {
     var pX = 0
     for (i in 0 until p.size) {
-        pX += p[i] * x.toDouble().pow(i).toInt()
+        pX += p[i] * pow(x, i)
     }
     return pX
 }
@@ -264,15 +276,18 @@ fun convert(n: Int, base: Int): List<Int> {
  * Использовать функции стандартной библиотеки, напрямую и полностью решающие данную задачу
  * (например, n.toString(base) и подобные), запрещается.
  */
-fun convertToString(n: Int, base: Int): String {
+fun convertToString(n: Int, base: Int): String = convert(n, base).joinToString(separator = "", transform = { if (it < 10) "$it" else ('W' + it).toString() })
+/*
+{
     val list = convert(n, base)
     var string = ""
     for (element in list) {
         if (element < 10) string += "$element"
-        else string += (element + 87).toChar()
+        else string += 'W' + element
     }
     return string
 }
+*/
 
 /**
  * Средняя
@@ -284,7 +299,7 @@ fun convertToString(n: Int, base: Int): String {
 fun decimal(digits: List<Int>, base: Int): Int {
     var num = 0.0
     for ((i, element) in digits.withIndex()) {
-        num += element * base.toDouble().pow(digits.size - i - 1)
+        num += element * pow(base, digits.size - i - 1)
     }
     return num.toInt()
 }
@@ -305,8 +320,8 @@ fun decimalFromString(str: String, base: Int): Int {
     var num = 0.0
     for ((i, char) in str.withIndex()) {
         var digit = char.toInt()
-        digit -= if (digit <= 57) 48 else 87
-        num += digit * base.toDouble().pow(str.length - i - 1)
+        digit -= (if (digit.toChar() <= '9') '0' else 'W').toInt()
+        num += digit * pow(base, str.length - i - 1)
     }
     return num.toInt()
 }
