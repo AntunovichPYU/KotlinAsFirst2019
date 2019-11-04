@@ -276,7 +276,8 @@ fun convert(n: Int, base: Int): List<Int> {
  * Использовать функции стандартной библиотеки, напрямую и полностью решающие данную задачу
  * (например, n.toString(base) и подобные), запрещается.
  */
-fun convertToString(n: Int, base: Int): String = convert(n, base).joinToString(separator = "", transform = { if (it < 10) "$it" else ('W' + it).toString() })
+fun convertToString(n: Int, base: Int): String =
+    convert(n, base).joinToString(separator = "", transform = { if (it < 10) "$it" else ('a' + (it - 10)).toString() })
 /*
 {
     val list = convert(n, base)
@@ -320,7 +321,7 @@ fun decimalFromString(str: String, base: Int): Int {
     var num = 0.0
     for ((i, char) in str.withIndex()) {
         var digit = char.toInt()
-        digit -= (if (digit.toChar() <= '9') '0' else 'W').toInt()
+        digit -= (if (digit.toChar() <= '9') '0' else 'a' - 10).toInt()
         num += digit * pow(base, str.length - i - 1)
     }
     return num.toInt()
