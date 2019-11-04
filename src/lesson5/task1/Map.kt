@@ -2,6 +2,8 @@
 
 package lesson5.task1
 
+import kotlin.Double.Companion.MAX_VALUE
+
 /**
  * Пример
  *
@@ -233,7 +235,17 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
  *     "печенье"
  *   ) -> "Мария"
  */
-fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? = TODO()
+fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? {
+    var minPrice = MAX_VALUE
+    var res: String? = null
+    for ((name, pair) in stuff) {
+        if (pair.first == kind && pair.second <= minPrice) {
+            minPrice = pair.second
+            res = name
+        }
+    }
+    return res
+}
 
 /**
  * Средняя
@@ -244,7 +256,11 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
  * Например:
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
-fun canBuildFrom(chars: List<Char>, word: String): Boolean = TODO()
+fun canBuildFrom(chars: List<Char>, word: String): Boolean {
+    val setOfChar = chars.toSet()
+    val wordToBuild = word.toLowerCase().toSet()
+    return setOfChar == wordToBuild
+}
 
 /**
  * Средняя
@@ -258,7 +274,22 @@ fun canBuildFrom(chars: List<Char>, word: String): Boolean = TODO()
  * Например:
  *   extractRepeats(listOf("a", "b", "a")) -> mapOf("a" to 2)
  */
-fun extractRepeats(list: List<String>): Map<String, Int> = TODO()
+fun extractRepeats(list: List<String>): Map<String, Int> {
+    val map = mutableMapOf<String, Int>()
+    val setToRemove = list.toMutableSet()
+    for (e in list) {
+        var count = 1
+        if (map.contains(e)) {
+            count += map[e]!!
+            setToRemove.remove(e)
+        }
+        map[e] = count
+    }
+    for (e in setToRemove) {
+        map.remove(e)
+    }
+    return map
+}
 
 /**
  * Средняя
@@ -269,7 +300,17 @@ fun extractRepeats(list: List<String>): Map<String, Int> = TODO()
  * Например:
  *   hasAnagrams(listOf("тор", "свет", "рот")) -> true
  */
-fun hasAnagrams(words: List<String>): Boolean = TODO()
+fun hasAnagrams(words: List<String>): Boolean {
+    return if (words.isEmpty()) false else {
+        val listOfWords = mutableListOf<Set<Char>>()
+        val setOfWords = mutableSetOf<Set<Char>>()
+        for (word in words) {
+            listOfWords.add(word.toSet())
+            setOfWords.add(word.toSet())
+        }
+        listOfWords != setOfWords.toList()
+    }
+}
 
 /**
  * Сложная
