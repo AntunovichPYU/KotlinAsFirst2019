@@ -4,7 +4,6 @@ package lesson4.task1
 
 import lesson1.task1.discriminant
 import lesson1.task1.sqr
-import kotlin.math.pow
 import kotlin.math.sqrt
 
 /**
@@ -335,9 +334,11 @@ fun decimalFromString(str: String, base: Int): Int {
  * 90 = XC, 100 = C, 400 = CD, 500 = D, 900 = CM, 1000 = M.
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
+val romanDigits = listOf("M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I")
+val digits = listOf(1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1)
+
 fun roman(n: Int): String {
-    val romanDigits = listOf("M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I")
-    val digits = listOf(1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1)
+
     var num = n
     var romanNum = ""
     for (i in 0 until digits.size) {
@@ -356,21 +357,22 @@ fun roman(n: Int): String {
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
+val rusDigits = listOf(
+    "", "один", "два", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять", "одна", "две"
+)
+val rusTens = listOf(
+    "", "десять", "двадцать", "тридцать", "сорок",
+    "пятьдесят", "шестьдесят", "семьдесят", "восемьдесят", "девяносто"
+)
+val rusTensBeforeTwenty = listOf(
+    "", "одиннадцать", "двенадцать", "тринадцать", "четырнадцать",
+    "пятнадцать", "шестнадцать", "семнадцать", "восемнадцать", "девятнадцать"
+)
+val rusHundreds = listOf(
+    "", "сто", "двести", "триста", "четыреста", "пятьсот", "шестьсот", "семьсот", "восемьсот", "девятьсот"
+)
+
 fun russian(n: Int): String {
-    val rusDigits = listOf(
-        "", "один", "два", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять", "одна", "две"
-    )
-    val rusTens = listOf(
-        "", "десять", "двадцать", "тридцать", "сорок",
-        "пятьдесят", "шестьдесят", "семьдесят", "восемьдесят", "девяносто"
-    )
-    val rusTensBeforeTwenty = listOf(
-        "", "одиннадцать", "двенадцать", "тринадцать", "четырнадцать",
-        "пятнадцать", "шестнадцать", "семнадцать", "восемнадцать", "девятнадцать"
-    )
-    val rusHundreds = listOf(
-        "", "сто", "двести", "триста", "четыреста", "пятьсот", "шестьсот", "семьсот", "восемьсот", "девятьсот"
-    )
     val hundreds = n % 1000
     val thousands = n / 1000
     val result = mutableListOf<String>()
