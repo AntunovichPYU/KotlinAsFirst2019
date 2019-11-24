@@ -88,7 +88,7 @@ val monthToDigit = mapOf(
 )
 
 fun dateStrToDigit(str: String): String {
-    if (!str.matches(Regex("""[1-9]\d? [а-я]+ (?<!0)\d+"""))) return ""
+    if (!str.matches(Regex("""\d\d? [а-я]+ (?<!0)\d+"""))) return ""
 
     val date = str.split(" ")
     val day = date[0].toInt()
@@ -111,14 +111,14 @@ fun dateStrToDigit(str: String): String {
  * входными данными.
  */
 fun dateDigitToStr(digital: String): String {
-    if (!digital.matches(Regex("""\d[1-9]\.[0-1][0-9]\.(?<!0)\d+"""))) return ""
+    if (!digital.matches(Regex("""\d\d\.[01][0-9]\.(?<!0)\d+"""))) return ""
 
     val date = digital.split(".")
     val day = date[0].toInt()
     val month = date[1].toInt()
     val year = date[2].toInt()
 
-    return if (day > daysInMonth(month, year)) ""
+    return if (day > daysInMonth(month, year) || month == 0 || day == 0) ""
     else String.format("%d %s %d", day, monthToDigit.keys.toList()[month - 1], year)
 }
 
@@ -220,7 +220,7 @@ fun firstDuplicateIndex(str: String): Int {
     val words = str.toLowerCase().split(" ")
     var index = 0
 
-    return if (str.toLowerCase().contains(Regex("""([а-яё]+) \1"""))) {
+    return if (str.toLowerCase().contains(Regex("""([а-яёa-z]+) \1"""))) {
         for (i in 0 until words.size - 1) {
             if (words[i + 1] == words[i]) {
                 break
