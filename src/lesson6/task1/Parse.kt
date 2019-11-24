@@ -111,7 +111,7 @@ fun dateStrToDigit(str: String): String {
  * входными данными.
  */
 fun dateDigitToStr(digital: String): String {
-    if (!digital.matches(Regex("""\d\d\.[01][0-9]\.(?<!0)\d+"""))) return ""
+    if (!digital.matches(Regex("""\d\d\.(?:0\d|1[0-2])\.(?<!0)\d+"""))) return ""
 
     val date = digital.split(".")
     val day = date[0].toInt()
@@ -220,7 +220,7 @@ fun firstDuplicateIndex(str: String): Int {
     val words = str.toLowerCase().split(" ")
     var index = 0
 
-    return if (str.toLowerCase().contains(Regex("""([а-яёa-z]+) \1"""))) {
+    return if (str.toLowerCase().contains(Regex("""(.+) \1"""))) {
         for (i in 0 until words.size - 1) {
             if (words[i + 1] == words[i]) {
                 break
