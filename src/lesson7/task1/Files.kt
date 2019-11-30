@@ -114,8 +114,9 @@ fun centerFile(inputName: String, outputName: String) {
             if (line.length >= maxStringLength) maxStringLength = line.length
         }
         for (line in File(inputName).readLines()) {
-            if (line.length < maxStringLength) {
-                for (i in 0 until (maxStringLength - line.trim().length) / 2) it.write(" ")
+            val length = line.trim().length
+            if (length < maxStringLength) {
+                for (i in 0 until (maxStringLength - length) / 2) it.write(" ")
             }
             it.write(line.trim())
             it.newLine()
