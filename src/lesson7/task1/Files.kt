@@ -111,7 +111,8 @@ fun centerFile(inputName: String, outputName: String) {
     var maxStringLength = 0
     File(outputName).bufferedWriter().use {
         for (line in File(inputName).readLines()) {
-            if (line.length >= maxStringLength) maxStringLength = line.length
+            val length = line.trim().length
+            if (length >= maxStringLength) maxStringLength = length
         }
         for (line in File(inputName).readLines()) {
             val length = line.trim().length
