@@ -153,7 +153,43 @@ fun centerFile(inputName: String, outputName: String) {
  * 8) Если входной файл удовлетворяет требованиям 1-7, то он должен быть в точности идентичен выходному файлу
  */
 fun alignFileByWidth(inputName: String, outputName: String) {
-    TODO()
+    val input = File(inputName).readLines().map { it.trim().split(Regex("""\s+""")) }
+    var maxLineLength = 0
+    val listOfLengths = mutableListOf<Int>()
+    File(outputName).bufferedWriter().use { file ->
+        for (line in input) {
+            val lineLength = line.sumBy { it.length } + line.size - 1
+            listOfLengths.add(lineLength - line.size + 1)
+            if (lineLength >= maxLineLength) maxLineLength = lineLength
+        }
+        for ((i, line) in input.withIndex()) {
+            if (line.size == 1) {
+                file.write(line.joinToString())
+                file.newLine()
+                continue
+            }
+            if (listOfLengths[i] == maxLineLength) {
+                file.write(line.joinToString(" "))
+                file.newLine()
+            } else {
+                val numberOfSpaces = (maxLineLength - listOfLengths[i]) / (line.size - 1)
+                var extraSpaces = (maxLineLength - listOfLengths[i]) % (line.size - 1)
+                for ((j, word) in line.withIndex()) {
+                    file.write(word)
+                    if (j == line.lastIndex) break
+                    if (extraSpaces != 0) {
+                        for (space in 1..numberOfSpaces + 1) {
+                            file.write(" ")
+                        }
+                        extraSpaces--
+                    } else {
+                        for (space in 1..numberOfSpaces) file.write(" ")
+                    }
+                }
+                file.newLine()
+            }
+        }
+    }
 }
 
 /**
@@ -437,22 +473,22 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
 }
 
 
-/**
- * Сложная
- *
- * Вывести в выходной файл процесс деления столбиком числа lhv (> 0) на число rhv (> 0).
- *
- * Пример (для lhv == 19935, rhv == 22):
-  19935 | 22
- -198     906
- ----
+    /**
+     * Сложная
+     *
+     * Вывести в выходной файл процесс деления столбиком числа lhv (> 0) на число rhv (> 0).
+     *
+     * Пример (для lhv == 19935, rhv == 22):
+    19935 | 22
+    -198     906
+    ----
     13
     -0
     --
     135
-   -132
-   ----
-      3
+    -132
+    ----
+    3
 
  * Используемые пробелы, отступы и дефисы должны в точности соответствовать примеру.
  *
