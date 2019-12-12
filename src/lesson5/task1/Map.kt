@@ -94,11 +94,10 @@ fun buildWordSet(text: List<String>): MutableSet<String> {
  *     -> mapOf(5 to listOf("Семён", "Михаил"), 3 to listOf("Марат"))
  */
 fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
-    val gradesSet = grades.values.toSet()
-    val namesList = grades.keys.toList()
-    val res = mutableMapOf<Int, List<String>>()
-    for (grade in gradesSet) {
-        res[grade] = namesList.filter { grades[it] == grade }
+    val res = mutableMapOf<Int, MutableList<String>>()
+    for ((name, grade) in grades) {
+        if (!res.contains(grade)) res[grade] = mutableListOf(name)
+        else res[grade]?.add(name)
     }
     return res
 }
@@ -134,12 +133,8 @@ fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean {
  *     -> a changes to mutableMapOf() aka becomes empty
  */
 fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>) {
-    val keysToRemove = mutableListOf<String>()
-    for ((name, value) in a) {
-        if (b.contains(name) && b[name] == value) keysToRemove.add(name)
-    }
-    for (key in keysToRemove) {
-        a.remove(key)
+    for ((name, value) in b) {
+        if (a[name] == value) a.remove(name)
     }
 }
 
@@ -279,13 +274,11 @@ fun extractRepeats(list: List<String>): Map<String, Int> {
  */
 fun hasAnagrams(words: List<String>): Boolean {
     return if (words.isEmpty()) false else {
-        val listOfWords = mutableListOf<Set<Char>>()
         val setOfWords = mutableSetOf<Set<Char>>()
         for (word in words) {
-            listOfWords.add(word.toSet())
             setOfWords.add(word.toSet())
         }
-        listOfWords != setOfWords.toList()
+        words.size != setOfWords.size
     }
 }
 
