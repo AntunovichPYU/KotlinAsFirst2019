@@ -3,10 +3,8 @@
 package lesson8.task1
 
 import lesson1.task1.sqr
-import kotlin.math.PI
-import kotlin.math.cos
-import kotlin.math.sin
-import kotlin.math.sqrt
+import java.lang.IllegalArgumentException
+import kotlin.math.*
 
 /**
  * Точка на плоскости
@@ -79,14 +77,17 @@ data class Circle(val center: Point, val radius: Double) {
      * расстояние между их центрами минус сумма их радиусов.
      * Расстояние между пересекающимися окружностями считать равным 0.0.
      */
-    fun distance(other: Circle): Double = TODO()
+    fun distance(other: Circle): Double {
+        val res = center.distance(other.center) - (radius + other.radius)
+        return if (res < 0) 0.0 else res
+    }
 
     /**
      * Тривиальная
      *
      * Вернуть true, если и только если окружность содержит данную точку НА себе или ВНУТРИ себя
      */
-    fun contains(p: Point): Boolean = TODO()
+    fun contains(p: Point): Boolean = center.distance(p) <= radius
 }
 
 /**
@@ -106,7 +107,26 @@ data class Segment(val begin: Point, val end: Point) {
  * Дано множество точек. Вернуть отрезок, соединяющий две наиболее удалённые из них.
  * Если в множестве менее двух точек, бросить IllegalArgumentException
  */
-fun diameter(vararg points: Point): Segment = TODO()
+fun diameter(vararg points: Point): Segment {
+    if (points.size < 2) throw IllegalArgumentException()
+    var p1 = Point(0.0, 0.0)
+    var p2 = points[0]
+    var maxDistance = 0.0
+    val setOfPoints = points.toMutableSet()
+    while (true) {
+        var maximumChanged = true
+        val begin = p2
+        setOfPoints.remove(begin)
+        for (point in setOfPoints) if (begin.distance(point) > maxDistance) {
+            p2 = point
+            maxDistance = begin.distance(point)
+            maximumChanged = false
+        }
+        if (maximumChanged) break
+        p1 = begin
+    }
+    return Segment(p1, p2)
+}
 
 /**
  * Простая
@@ -135,7 +155,11 @@ class Line private constructor(val b: Double, val angle: Double) {
      * Найти точку пересечения с другой линией.
      * Для этого необходимо составить и решить систему из двух уравнений (каждое для своей прямой)
      */
-    fun crossPoint(other: Line): Point = TODO()
+    fun crossPoint(other: Line): Point {
+        val x = (other.b * cos(angle) - b * cos(other.angle)) / sin(angle - other.angle)
+        val y = (b * sin(other.angle) - other.b * sin(angle)) / sin(other.angle - angle)
+        return Point(x, y)
+    }
 
     override fun equals(other: Any?) = other is Line && angle == other.angle && b == other.b
 
@@ -153,21 +177,34 @@ class Line private constructor(val b: Double, val angle: Double) {
  *
  * Построить прямую по отрезку
  */
-fun lineBySegment(s: Segment): Line = TODO()
+fun lineBySegment(s: Segment): Line {
+    val point = s.begin
+    val tan = (s.begin.y - s.end.y) / (s.begin.x - s.end.x)
+    val angle = if (tan >= 0) atan(tan) else atan(tan) + PI
+
+    return Line(point, angle)
+}
 
 /**
  * Средняя
  *
  * Построить прямую по двум точкам
  */
-fun lineByPoints(a: Point, b: Point): Line = TODO()
+fun lineByPoints(a: Point, b: Point): Line {
+    val segment = Segment(a, b)
+    return lineBySegment(segment)
+}
 
 /**
  * Сложная
  *
  * Построить серединный перпендикуляр по отрезку или по двум точкам
  */
-fun bisectorByPoints(a: Point, b: Point): Line = TODO()
+fun bisectorByPoints(a: Point, b: Point): Line {
+    val midPoint = Point((a.x + b.x) / 2, (a.y + b.y) / 2)
+    val angle = (lineByPoints(a, b).angle + PI / 2) % PI
+    return Line(midPoint, angle)
+}
 
 /**
  * Средняя
@@ -186,7 +223,11 @@ fun findNearestCirclePair(vararg circles: Circle): Pair<Circle, Circle> = TODO()
  * (построить окружность по трём точкам, или
  * построить окружность, описанную вокруг треугольника - эквивалентная задача).
  */
-fun circleByThreePoints(a: Point, b: Point, c: Point): Circle = TODO()
+fun circleByThreePoints(a: Point, b: Point, c: Point): Circle {
+    val bisectorsCrossPoint = bisectorByPoints(a, b).crossPoint(bisectorByPoints(b, c))
+    val radius = bisectorsCrossPoint.distance(a)
+    return Circle(bisectorsCrossPoint, radius)
+}
 
 /**
  * Очень сложная
