@@ -109,23 +109,20 @@ data class Segment(val begin: Point, val end: Point) {
  */
 fun diameter(vararg points: Point): Segment {
     if (points.size < 2) throw IllegalArgumentException()
-    var p1 = Point(0.0, 0.0)
-    var p2 = points[0]
+    var maxP1 = Point(0.0, 0.0)
+    var maxP2 = Point(0.0, 0.0)
     var maxDistance = 0.0
-    val setOfPoints = points.toMutableSet()
-    while (true) {
-        var maximumChanged = true
-        val begin = p2
-        setOfPoints.remove(begin)
-        for (point in setOfPoints) if (begin.distance(point) > maxDistance) {
-            p2 = point
-            maxDistance = begin.distance(point)
-            maximumChanged = false
+    for (i in 0 until points.size) {
+        for (j in i + 1 until points.size) {
+            val distance = points[i].distance(points[j])
+            if (distance > maxDistance) {
+                maxDistance = distance
+                maxP1 = points[i]
+                maxP2 = points[j]
+            }
         }
-        if (maximumChanged) break
-        p1 = begin
     }
-    return Segment(p1, p2)
+    return Segment(maxP1, maxP2)
 }
 
 /**
@@ -180,7 +177,7 @@ class Line private constructor(val b: Double, val angle: Double) {
 fun lineBySegment(s: Segment): Line {
     val point = s.begin
     val tan = (s.begin.y - s.end.y) / (s.begin.x - s.end.x)
-    val angle = if (tan >= 0) atan(tan) else atan(tan) + PI
+    val angle = if (tan >= 0) atan(tan) else (atan(tan) + PI) % PI
 
     return Line(point, angle)
 }
